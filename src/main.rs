@@ -14,6 +14,8 @@ enum LogLevel {
     Error,
     Fatal,
     Fail,
+    Failed,
+    Severe,
     Panic,
     Critical
 }
@@ -30,7 +32,9 @@ impl LogLevel {
             Some(LogLevel::Trace) => Some(Color::Magenta),
             Some(LogLevel::Error) => Some(Color::Red),
             Some(LogLevel::Fail) => Some(Color::Red),
+            Some(LogLevel::Failed) => Some(Color::Red),
             Some(LogLevel::Fatal) => Some(Color::Red),
+            Some(LogLevel::Severe) => Some(Color::Red),
             Some(LogLevel::Panic) => Some(Color::Red),
             Some(LogLevel::Critical) => Some(Color::Red),
             None => None,
