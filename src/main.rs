@@ -1,6 +1,8 @@
+use std::io::Write;
+
 use strum::IntoEnumIterator;
 use strum_macros::{EnumIter, EnumString, AsRefStr};
-use colored::{Colorize, ColoredString};
+use termcolor::{Color, StandardStream, ColorChoice, WriteColor, ColorSpec};
 
 #[derive(Debug, EnumIter, EnumString, AsRefStr, Copy, Clone)]
 #[strum(serialize_all = "UPPERCASE")]
@@ -11,26 +13,27 @@ enum LogLevel {
     Trace,
     Error,
     Fatal,
+    Fail,
     Panic,
     Critical
 }
 
 impl LogLevel {
-    fn colorize(line: &str) -> ColoredString {
+    fn get_color(line: &str) -> Option<Color> {
 
         let level = Self::parse(line.clone());
         
         match level {
-            Some(LogLevel::Info) => line.cyan(),
-            Some(LogLevel::Warn) => line.yellow(),
-            Some(LogLevel::Debug) => line.blue(),
-            Some(LogLevel::Trace) => line.magenta(),
-            Some(LogLevel::Error) => line.red(),
-            Some(LogLevel::Fatal) => line.red().bold(),
-            Some(LogLevel::Panic) => line.red().bold(),
-            Some(LogLevel::Critical) => line.red().bold(),
-            None => line.normal(),
-
+            Some(LogLevel::Info) => Some(Color::Cyan),
+            Some(LogLevel::Warn) => Some(Color::Yellow), 
+            Some(LogLevel::Debug) => Some(Color::Blue),
+            Some(LogLevel::Trace) => Some(Color::Magenta),
+            Some(LogLevel::Error) => Some(Color::Red),
+            Some(LogLevel::Fail) => Some(Color::Red),
+            Some(LogLevel::Fatal) => Some(Color::Red),
+            Some(LogLevel::Panic) => Some(Color::Red),
+            Some(LogLevel::Critical) => Some(Color::Red),
+            None => None,
         }
     }
 
@@ -57,9 +60,12 @@ impl LogLevel {
 fn main() {
     let stdin = std::io::stdin();
     let mut buffer = String::new();
+    let mut stdout = StandardStream::stdout(ColorChoice::Always);
 
     while stdin.read_line(&mut buffer).unwrap() > 0 {
-        print!("{}", LogLevel::colorize(buffer.as_ref()));
+        let color = LogLevel::get_color(buffer.as_ref());
+        stdout.set_color(ColorSpec::new().set_fg(color)).unwrap();
+        write!(&mut stdout, "{}", buffer).unwrap();
         buffer.clear();
     }
 }
