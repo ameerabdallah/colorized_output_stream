@@ -59,7 +59,7 @@ fn main() {
     let mut buffer = String::new();
 
     while stdin.read_line(&mut buffer).unwrap() > 0 {
-        println!("{}", LogLevel::colorize(buffer.as_ref()));
+        print!("{}", LogLevel::colorize(buffer.as_ref()));
         buffer.clear();
     }
 }
