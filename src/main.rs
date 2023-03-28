@@ -60,7 +60,7 @@ impl LogLevel {
 fn main() {
     let stdin = std::io::stdin();
     let mut buffer = String::new();
-    let mut stdout = StandardStream::stdout(ColorChoice::Always);
+    let mut stdout = StandardStream::stdout(ColorChoice::AlwaysAnsi);
 
     while stdin.read_line(&mut buffer).unwrap() > 0 {
         let color = LogLevel::get_color(buffer.as_ref());
